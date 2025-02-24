@@ -3,6 +3,8 @@ package com.hinamlist.hinam_list.service.data_scraping.json_scraper;
 import com.hinamlist.hinam_list.service.data_scraping.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -11,16 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class RamiLeviJsonScraper extends AbstractJsonScraper {
+
     @Override
-    public List<Integer> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
+    public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
         String uriString = "https://www-api.rami-levy.co.il/api/v2/site/static/menu";
         HttpRequest request = createHttpPostRequest(uriString, new HashMap<>());
-        List<Integer> list = new ArrayList<>();
-        for (String key : new JSONObject(getResponse(request)).getJSONObject("groups").keySet()) {
-            list.add(Integer.valueOf(key));
-        }
-        return list;
+        return new ArrayList<>(new JSONObject(getResponse(request)).getJSONObject("groups").keySet());
     }
 
     @Override

@@ -27,7 +27,7 @@ abstract class JsonScraperQuickTest<T extends IJsonScraper> {
     @Test
     @Order(1)
     public void getCategoryIdListTest() {
-        List<Integer> tempList = null;
+        List<String> tempList = null;
         try {
             tempList = instance.getCategoryIdList();
         } catch (Exception e) {

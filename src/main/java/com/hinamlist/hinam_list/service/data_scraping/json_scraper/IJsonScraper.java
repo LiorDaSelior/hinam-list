@@ -7,6 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IJsonScraper {
-    public List<Integer> getCategoryIdList() throws IOException, APIResponseException, InterruptedException; // TODO: reconsider returning JSON object
+    public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException; // TODO: reconsider returning JSON object
     public JSONArray getCategoryProductInfo(String categoryId) throws IOException, APIResponseException, InterruptedException;
 }

@@ -2,6 +2,8 @@ package com.hinamlist.hinam_list.service.data_scraping.json_scraper;
 
 import com.hinamlist.hinam_list.service.data_scraping.json_scraper.exception.APIResponseException;
 import org.json.JSONObject;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -13,6 +15,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
+@Component
 public abstract class AbstractJsonScraper implements IJsonScraper{
     protected HttpClient client;
 

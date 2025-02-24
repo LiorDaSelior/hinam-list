@@ -3,31 +3,34 @@ package com.hinamlist.hinam_list.service.data_scraping.json_scraper;
 import com.hinamlist.hinam_list.service.data_scraping.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class HaziHinamJsonScraper extends AbstractJsonScraper{
 
     public HaziHinamJsonScraper() throws IOException, InterruptedException, APIResponseException {
         super();
         String uriString = "https://shop.hazi-hinam.co.il/proxy/init";
         HttpRequest request = createHttpGetRequest(uriString);
-        var response = getResponse(request);
+        getResponse(request);
 
     }
     @Override
-    public List<Integer> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
+    public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
         String uriString = "https://shop.hazi-hinam.co.il/proxy/api/Catalog/get";
         HttpRequest request = createHttpGetRequest(uriString);
         JSONArray jsonArray = new JSONObject(getResponse(request)).getJSONObject("Results").getJSONArray("Categories");
-        List<Integer> idArray = new ArrayList<>();
+        List<String> idArray = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONArray currentSubCategoryJsonArray = jsonArray.getJSONObject(i).getJSONArray("SubCategories");
             for (int j = 0; j < currentSubCategoryJsonArray.length(); j++) {
-                idArray.add(currentSubCategoryJsonArray.getJSONObject(j).getInt("Id"));
+                idArray.add(String.valueOf(currentSubCategoryJsonArray.getJSONObject(j).getInt("Id")));
             }
         }
         return idArray;
