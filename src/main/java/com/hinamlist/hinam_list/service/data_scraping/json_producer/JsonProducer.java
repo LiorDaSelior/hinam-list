@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
-public abstract class JsonProducer implements IJsonProducer {
+public class JsonProducer implements IJsonProducer {
     protected IJsonScraper scraper;
     protected RabbitTemplate rabbitTemplate;
     protected String jsonSenderExchangeName;
