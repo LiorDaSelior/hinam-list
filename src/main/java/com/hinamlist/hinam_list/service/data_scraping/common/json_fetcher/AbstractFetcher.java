@@ -1,4 +1,4 @@
-package com.hinamlist.hinam_list.service.data_scraping.common;
+package com.hinamlist.hinam_list.service.data_scraping.common.json_fetcher;
 
 import org.json.JSONObject;
 

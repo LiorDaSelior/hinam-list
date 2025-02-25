@@ -1,36 +1,63 @@
 package com.hinamlist.hinam_list.service.data_scraping.json_consumer.base;
 
-import com.hinamlist.hinam_list.service.data_scraping.common.IFetcher;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Queue;
+import com.hinamlist.hinam_list.service.data_scraping.common.json_fetcher.IFetcher;
+import com.hinamlist.hinam_list.service.data_scraping.common.producer.IProducer;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.context.annotation.Scope;
 
-abstract class JsonConsumer implements  IJsonConsumer {
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+abstract class JsonConsumer implements IJsonConsumer {
     public static int static_id = 0;
     public int actual_id = static_id++;
 
     //@Autowired
-    public final String exchangeName;
+    public final FanoutExchange exchange;
     //@Autowired
     public final RabbitAdmin admin;
     //public final String queue_name;
-    public final String queueName;
     public final IFetcher fetcher;
     public final int storeId;
+    public final IProducer producer;
 
-    public JsonConsumer(String queueName, String exchangeName, RabbitAdmin admin, IFetcher fetcher, int storeId) {
+    public JsonConsumer(
+            FanoutExchange exchange,
+            RabbitAdmin admin,
+            IFetcher fetcher,
+            int storeId,
+            IProducer producer
+    ) {
         this.storeId = storeId;
         this.fetcher = fetcher;
-        this.exchangeName = exchangeName;
+        this.exchange = exchange;
         this.admin = admin;
-        this.queueName = queueName;
-        //queue_name = admin.declareQueue(new Queue("queue_" + actual_id));
-        admin.declareQueue(new Queue(queueName));
+        this.producer = producer;
+
+/*        admin.declareQueue(new Queue(queueName));
         Binding binding = new Binding(queueName, Binding.DestinationType.QUEUE, exchangeName, "", null);
-        admin.declareBinding(binding);
+        admin.declareBinding(binding);*/
+
+        createListener(admin, admin.declareQueue(), exchange);
     }
 
-/*    @RabbitListener(queues = "{#queue.getName()}")*/
-    public abstract void receiveMessage(String message);
+    private void createListener(RabbitAdmin admin, Queue queue, FanoutExchange exchange) {
+        admin.declareBinding(BindingBuilder.bind(queue).to(exchange));
+        SimpleMessageListenerContainer listener = new SimpleMessageListenerContainer(admin.getRabbitTemplate().getConnectionFactory());
+        listener.addQueues(queue);
+        listener.setMessageListener(message -> {
+            String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
+            receiveMessage(messageBody);
+        });
+        listener.start();
+    }
+
+    public void receiveMessage(String message) {
+        producer.handleMessage(fetcher, message, storeId, actual_id);
+    }
 
 }

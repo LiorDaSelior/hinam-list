@@ -1,12 +1,14 @@
 package com.hinamlist.hinam_list.service.data_scraping.json_consumer.base;
 
-import com.hinamlist.hinam_list.service.data_scraping.common.CarrfourFetcher;
+import com.hinamlist.hinam_list.service.data_scraping.common.json_fetcher.CarrfourFetcher;
+import com.hinamlist.hinam_list.service.data_scraping.common.producer.IProducer;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-public abstract class CarrfourJsonConsumer extends JsonConsumer{
+public class CarrfourJsonConsumer extends JsonConsumer{
 
-    public CarrfourJsonConsumer(String queueName, String exchangeName, RabbitAdmin admin, CarrfourFetcher fetcher, int storeId) {
-        super(queueName, exchangeName, admin, fetcher, storeId);
+    public CarrfourJsonConsumer(FanoutExchange exchange, RabbitAdmin admin, CarrfourFetcher fetcher, int storeId, IProducer producer) {
+        super( exchange, admin, fetcher, storeId, producer);
     }
 }

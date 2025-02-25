@@ -10,16 +10,19 @@ import org.springframework.stereotype.Component;
 public class ExchangeFactory {
 
     @Bean
+    @Qualifier("HaziHinamExchange")
     FanoutExchange jsonSenderHaziHinamExchange(@Value("${rabbitmq.json-sender.exchange.hazihinam}")  String jsonSenderExchangeName) {
         return new FanoutExchange(jsonSenderExchangeName);
     }
 
     @Bean
+    @Qualifier("RamiLeviExchange")
     FanoutExchange jsonSenderRamiLeviExchange(@Value("${rabbitmq.json-sender.exchange.ramilevi}")  String jsonSenderExchangeName) {
         return new FanoutExchange(jsonSenderExchangeName);
     }
 
     @Bean
+    @Qualifier("CarrfourExchange")
     FanoutExchange jsonSenderCarrfourExchange(@Value("${rabbitmq.json-sender.exchange.carrfour}")  String jsonSenderExchangeName) {
         return new FanoutExchange(jsonSenderExchangeName);
     }
