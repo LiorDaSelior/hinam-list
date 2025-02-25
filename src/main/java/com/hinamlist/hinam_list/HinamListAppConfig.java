@@ -1,9 +1,8 @@
 package com.hinamlist.hinam_list;
 
-import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +11,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+
+@EnableAutoConfiguration
+//@ComponentScan(basePackages={"com.hinamlist.hinam-list.service"})
+//@EnableJpaRepositories(basePackages="com.hinamlist.hinam-list.repository")
+//@EnableTransactionManagement
+//@EntityScan(basePackages="com.hinamlist.hinam-list.model")
 @EnableAsync
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 public class HinamListAppConfig {
