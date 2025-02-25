@@ -1,4 +1,4 @@
-package com.hinamlist.hinam_list.service.data_scraping.json_consumer.main_table.producer;
+package com.hinamlist.hinam_list.service.data_scraping.json_consumer.final_report.producer;
 
 import com.hinamlist.hinam_list.service.data_scraping.common.json_fetcher.IFetcher;
 import com.hinamlist.hinam_list.service.data_scraping.common.producer.IProducer;
@@ -8,33 +8,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonMainTableProducer implements IProducer {
+public class CommonFinalReportProducer implements IProducer {
     protected RabbitTemplate rabbitTemplate;
     protected String collectorExchangeName;
 
-    public CommonMainTableProducer(RabbitTemplate rabbitTemplate,
-                                   @Value("${rabbitmq.main-table-collector.exchange}") String collectorExchangeName) {
+    public CommonFinalReportProducer(RabbitTemplate rabbitTemplate,
+                                     @Value("${rabbitmq.final-report-collector.exchange}") String collectorExchangeName) {
         this.rabbitTemplate = rabbitTemplate;
         this.collectorExchangeName = collectorExchangeName;
     }
 
     public void handleMessage(IFetcher fetcher, String message, int storeId, int producerId) {
         JSONObject json = new JSONObject(message);
-
         if (json.isEmpty()) {
-            return;
+            var newJson = new JSONObject();
+            newJson.put("isFinished", true);
+            newJson.put("storeId", storeId);
+            rabbitTemplate.convertAndSend(collectorExchangeName, "", newJson.toString());
         }
-
-        int id = fetcher.extractIdFromJsonObject(json);
-        String barcode = fetcher.extractBarcodeFromJsonObject(json);
-
-        var newJson = new JSONObject();
-        newJson.put("id", id);
-        newJson.put("barcode", barcode);
-        newJson.put("storeId", storeId);
-
-        rabbitTemplate.convertAndSend(collectorExchangeName, "", newJson.toString());
     }
-
-
 }

@@ -24,7 +24,7 @@ public class MainTableCollector {
         int id = recordJsonObject.getInt("id");
         String barcode = recordJsonObject.getString("barcode");
         int storeId = recordJsonObject.getInt("storeId");
-        System.out.printf("Collector: Received - (Store: %d, StoreId: %d, Barcode: %s)%n", storeId, id, barcode);
+        //System.out.printf("Collector: Received - (Store: %d, StoreId: %d, Barcode: %s)%n", storeId, id, barcode);
         repo.save(new MainTableProduct(storeId, barcode,id));
     }
 }

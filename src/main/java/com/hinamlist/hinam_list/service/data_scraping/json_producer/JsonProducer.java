@@ -39,6 +39,7 @@ public class JsonProducer implements IJsonProducer {
                 sendJSONObject(jsonArray.getJSONObject(i));
             }
         }
+        sendJSONObject(new JSONObject());
     }
 
     @Override
