@@ -1,4 +1,4 @@
-package com.hinamlist.hinam_list;
+package com.hinamlist.hinam_list.service.data_scraping.json_producer;
 
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExchangeFactory {
+public class JsonExchangeConfig {
 
     @Bean
     @Qualifier("HaziHinamExchange")

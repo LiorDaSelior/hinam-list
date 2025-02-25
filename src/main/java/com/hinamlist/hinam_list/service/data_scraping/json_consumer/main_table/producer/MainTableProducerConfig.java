@@ -6,7 +6,6 @@ import com.hinamlist.hinam_list.service.data_scraping.common.json_fetcher.RamiLe
 import com.hinamlist.hinam_list.service.data_scraping.json_consumer.base.CarrfourJsonConsumer;
 import com.hinamlist.hinam_list.service.data_scraping.json_consumer.base.HaziHinamJsonConsumer;
 import com.hinamlist.hinam_list.service.data_scraping.json_consumer.base.RamiLeviJsonConsumer;
-import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GeneralTableProducerConfig {
+public class MainTableProducerConfig {
 
     @Bean
     public CarrfourJsonConsumer CarrfourGeneralTableProducer(
