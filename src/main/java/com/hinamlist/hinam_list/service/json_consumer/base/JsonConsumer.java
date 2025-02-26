@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 
 import java.nio.charset.StandardCharsets;
 
-abstract class JsonConsumer implements IJsonConsumer {
+public class JsonConsumer implements IJsonConsumer {
     public static int static_id = 0;
     public int actual_id = static_id++;
 
@@ -34,10 +34,6 @@ abstract class JsonConsumer implements IJsonConsumer {
         this.admin = admin;
         this.producer = producer;
 
-/*        admin.declareQueue(new Queue(queueName));
-        Binding binding = new Binding(queueName, Binding.DestinationType.QUEUE, exchangeName, "", null);
-        admin.declareBinding(binding);*/
-
         createListener(admin, admin.declareQueue(), exchange);
     }
 
@@ -55,5 +51,4 @@ abstract class JsonConsumer implements IJsonConsumer {
     public void receiveMessage(String message) {
         producer.handleMessage(fetcher, message, storeId, actual_id);
     }
-
 }
