@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queues = "${rabbitmq.main-table-collector.queue}")
 public class MainTableCollector {
 
-    private MainTableRepo repo;
+    private final MainTableRepo repo;
 
     MainTableCollector(MainTableRepo repo) {
         this.repo = repo;
@@ -25,6 +25,6 @@ public class MainTableCollector {
         String barcode = recordJsonObject.getString("barcode");
         int storeId = recordJsonObject.getInt("storeId");
         //System.out.printf("Collector: Received - (Store: %d, StoreId: %d, Barcode: %s)%n", storeId, id, barcode);
-        repo.save(new MainTableProduct(storeId, barcode,id));
+        repo.save(new MainTableProduct(storeId, barcode, id));
     }
 }
