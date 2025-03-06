@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class CarrfourFetcher extends AbstractFetcher{
     @Override
     public int extractIdFromJsonObject(JSONObject jsonObject) {
-        return jsonObject.getInt("productId");
+        return jsonObject.getInt("id");
     }
 
     @Override
