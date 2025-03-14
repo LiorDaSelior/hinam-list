@@ -36,6 +36,7 @@ public abstract class AbstractJsonScraper implements IJsonScraper{
 
     protected HttpRequest createHttpGetRequest(String uriString) {
         var builder = createHttpBuilder(uriString);
+        builder.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
         builder.GET();
         return builder.build();
     }
@@ -43,6 +44,7 @@ public abstract class AbstractJsonScraper implements IJsonScraper{
     protected HttpRequest createHttpPostRequest(String uriString, Map<String,String> propertyMap) {
         var builder = createHttpBuilder(uriString);
         builder.header("Content-Type", "application/json; charset=utf-8");
+        builder.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
         JSONObject obj = new JSONObject(propertyMap);
         builder.POST(HttpRequest.BodyPublishers.ofString(obj.toString()));
         return builder.build();
