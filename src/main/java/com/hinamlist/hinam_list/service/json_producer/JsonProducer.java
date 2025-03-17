@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
@@ -30,7 +31,7 @@ public class JsonProducer implements IJsonProducer {
     }
 
     @Async
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void sendJSONData() throws IOException, InterruptedException, APIResponseException {
         for (String categoryId : scraper.getCategoryIdList()) {
             JSONArray jsonArray = scraper.getCategoryProductInfo(categoryId);
