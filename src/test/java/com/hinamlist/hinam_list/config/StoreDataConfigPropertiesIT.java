@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @SpringBootTest(classes= PropertiesITConfiguration.class)
 @TestPropertySource("classpath:application.properties")
 public class StoreDataConfigPropertiesIT {
