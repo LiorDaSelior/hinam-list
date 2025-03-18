@@ -1,5 +1,6 @@
 package com.hinamlist.hinam_list.service.json_scraper;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,9 @@ import java.util.Map;
 
 @Component
 public class RamiLeviJsonScraper extends AbstractJsonScraper {
+    public RamiLeviJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
+        super(storeDataConfigProperties);
+    }
 
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {

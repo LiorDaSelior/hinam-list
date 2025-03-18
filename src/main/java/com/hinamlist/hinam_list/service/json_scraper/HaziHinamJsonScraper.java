@@ -1,5 +1,6 @@
 package com.hinamlist.hinam_list.service.json_scraper;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,8 +14,8 @@ import java.util.List;
 @Component
 public class HaziHinamJsonScraper extends AbstractJsonScraper{
 
-    public HaziHinamJsonScraper() throws IOException, InterruptedException, APIResponseException {
-        super();
+    public HaziHinamJsonScraper(StoreDataConfigProperties storeDataConfigProperties) throws IOException, InterruptedException, APIResponseException {
+        super(storeDataConfigProperties);
         String uriString = "https://shop.hazi-hinam.co.il/proxy/init";
         HttpRequest request = createHttpGetRequest(uriString);
         getResponse(request);

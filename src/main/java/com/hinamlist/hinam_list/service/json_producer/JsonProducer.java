@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Async;
 import java.io.IOException;
 
 public class JsonProducer implements IJsonProducer {
+    public final static String SUFFIX = "Producer";
+
     protected IJsonScraper scraper;
     protected RabbitTemplate rabbitTemplate;
     protected String jsonSenderExchangeName;

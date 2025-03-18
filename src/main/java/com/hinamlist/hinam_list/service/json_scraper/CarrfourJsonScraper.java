@@ -1,5 +1,6 @@
 package com.hinamlist.hinam_list.service.json_scraper;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,9 +13,16 @@ import java.util.List;
 
 @Component
 public class CarrfourJsonScraper extends AbstractJsonScraper {
+    public CarrfourJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
+        super(storeDataConfigProperties);
+    }
+
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
-        String uriString = "https://www.carrefour.co.il/v2/retailers/1540/branches/2997/specials/filters?appId=4&sort=%7B%22priority%22:%22desc%22%7D&sort=%7B%22sort%22:%22asc%22%7D&sort=%7B%22id%22:%22desc%22%7D";
+        //System.out.println(storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl());
+        //System.out.println(storeDataConfigProperties.getStoreDataMap());
+        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl()
+                + "/specials/filters?appId=4&sort=%7B%22priority%22:%22desc%22%7D&sort=%7B%22sort%22:%22asc%22%7D&sort=%7B%22id%22:%22desc%22%7D";
         HttpRequest request = createHttpGetRequest(uriString);
         JSONArray jsonArray = new JSONObject(getResponse(request)).getJSONArray("categories");
         List<String> idArray = new ArrayList<>();
@@ -32,7 +40,8 @@ public class CarrfourJsonScraper extends AbstractJsonScraper {
         JSONArray currentArray = new JSONArray();
         JSONArray responseArray;
         do {
-            String uriString = "https://www.carrefour.co.il/v2/retailers/1540/branches/2997/categories/" +
+            String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
+                    "/categories/" +
                     categoryId +
                     "/products?from=" +
                     currentAmount +
