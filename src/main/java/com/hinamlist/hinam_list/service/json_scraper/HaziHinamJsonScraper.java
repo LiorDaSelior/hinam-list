@@ -16,14 +16,15 @@ public class HaziHinamJsonScraper extends AbstractJsonScraper{
 
     public HaziHinamJsonScraper(StoreDataConfigProperties storeDataConfigProperties) throws IOException, InterruptedException, APIResponseException {
         super(storeDataConfigProperties);
-        String uriString = "https://shop.hazi-hinam.co.il/proxy/init";
+        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() + "/init";
         HttpRequest request = createHttpGetRequest(uriString);
         getResponse(request);
 
     }
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
-        String uriString = "https://shop.hazi-hinam.co.il/proxy/api/Catalog/get";
+        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
+                "/api/Catalog/get";
         HttpRequest request = createHttpGetRequest(uriString);
         JSONArray jsonArray = new JSONObject(getResponse(request)).getJSONObject("Results").getJSONArray("Categories");
         List<String> idArray = new ArrayList<>();
@@ -40,7 +41,8 @@ public class HaziHinamJsonScraper extends AbstractJsonScraper{
     public JSONArray getCategoryProductInfo(String categoryId) throws IOException, APIResponseException, InterruptedException {
         JSONArray currentArray = new JSONArray();
         JSONArray responseArray;
-        String uriString = "https://shop.hazi-hinam.co.il/proxy/api/item/getItemsBySubCategory?Id=" + categoryId;
+        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
+                "/api/item/getItemsBySubCategory?Id=" + categoryId;
         HttpRequest request = createHttpGetRequest(uriString);
         responseArray = new JSONObject(getResponse(request)).getJSONObject("Results").getJSONObject("Category").getJSONObject("SubCategory").getJSONArray("Items");
         currentArray.putAll(responseArray);
