@@ -1,16 +1,14 @@
 package com.hinamlist.hinam_list.config.integration;
 
+import com.hinamlist.hinam_list.common.ProducerLevelPropertiesConfiguration;
 import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_producer.IJsonProducer;
 import com.hinamlist.hinam_list.service.json_producer.JsonProducer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +18,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes= PropertiesITConfiguration.class)
+@SpringBootTest(classes= ProducerLevelPropertiesConfiguration.class)
 @TestPropertySource("classpath:application.properties")
 public class StoreDataConfigPropertiesIT {
     private final StoreDataConfigProperties configProperties;
