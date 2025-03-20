@@ -13,10 +13,6 @@ import java.util.concurrent.Executor;
 
 
 @EnableAutoConfiguration
-//@ComponentScan(basePackages={"com.hinamlist.hinam-list.service"})
-//@EnableJpaRepositories(basePackages="com.hinamlist.hinam-list.repository")
-//@EnableTransactionManagement
-//@EntityScan(basePackages="com.hinamlist.hinam-list.model")
 @EnableAsync
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 public class HinamListAppConfig {

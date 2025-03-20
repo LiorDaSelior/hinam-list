@@ -3,7 +3,7 @@ services:
     container_name: 'guide-rabbit'
     image: 'rabbitmq:latest'
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      - 'RABBITMQ_DEFAULT_PASS=${HINAMLIST_RABBIT_PASSWORD}'
+      - 'RABBITMQ_DEFAULT_USER=${HINAMLIST_RABBIT_USER}'
     ports:
       - '5672:5672'
