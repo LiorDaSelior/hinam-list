@@ -1,5 +1,6 @@
 package com.hinamlist.hinam_list.service.json_scraper;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,10 +15,14 @@ import java.util.Map;
 
 @Component
 public class RamiLeviJsonScraper extends AbstractJsonScraper {
+    public RamiLeviJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
+        super(storeDataConfigProperties);
+    }
 
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
-        String uriString = "https://www-api.rami-levy.co.il/api/v2/site/static/menu";
+        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
+                "/v2/site/static/menu";
         HttpRequest request = createHttpPostRequest(uriString, new HashMap<>());
         return new ArrayList<>(new JSONObject(getResponse(request)).getJSONObject("groups").keySet());
     }
@@ -34,7 +39,8 @@ public class RamiLeviJsonScraper extends AbstractJsonScraper {
         Map<String, String> propertyMap = new HashMap<>();
         do {
             breakCheck = false;
-            String uriString = "https://www.rami-levy.co.il/api/catalog?";
+            String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
+                    "/catalog?";
             propertyMap.clear();
             propertyMap.put("g", categoryId);
             propertyMap.put("from", String.valueOf(currentAmount));

@@ -1,7 +1,9 @@
 package com.hinamlist.hinam_list.service.json_scraper;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,9 +18,20 @@ import java.util.Map;
 
 @Component
 public abstract class AbstractJsonScraper implements IJsonScraper{
-    protected HttpClient client;
+    public static final String SUFFIX = "JsonScraper";
 
-    public AbstractJsonScraper() {
+    protected HttpClient client;
+    protected StoreDataConfigProperties storeDataConfigProperties;
+
+    protected final String storeName;
+    //protected final String targetBaseUrl;
+
+    @Autowired
+    public AbstractJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
+        storeName = StoreDataConfigProperties.getStoreName(this.getClass().getSimpleName(), SUFFIX);
+        this.storeDataConfigProperties = storeDataConfigProperties;
+        //targetBaseUrl = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl();
+
         CookieManager cookieManager = new CookieManager();
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         client = HttpClient.newBuilder().cookieHandler(cookieManager).build();

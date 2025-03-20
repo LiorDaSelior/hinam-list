@@ -4,6 +4,7 @@ import com.hinamlist.hinam_list.service.json_producer.JsonProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.Map;
 import java.util.Set;
@@ -13,14 +14,6 @@ import java.util.stream.Collectors;
 @ConfigurationProperties(prefix = "store")
 public class StoreDataConfigProperties {
     private Map<String, StoreData> storeDataMap;
-    private final Set<String> requiredStoreNameSet;
-
-    @Autowired
-    public StoreDataConfigProperties(Map<String, JsonProducer> producerMap) {
-        requiredStoreNameSet = producerMap.keySet().stream()
-                .map(producerName -> producerName.replaceFirst("Producer$", ""))
-                .collect(Collectors.toSet());
-    }
 
     public Map<String, StoreData> getStoreDataMap() {
         return storeDataMap;
@@ -30,8 +23,8 @@ public class StoreDataConfigProperties {
         this.storeDataMap = storeDataMap;
     }
 
-    public Set<String> getRequiredStoreNameSet() {
-        return requiredStoreNameSet;
+    public static String getStoreName(String name, String suffix) {
+        return name.replaceFirst(suffix + "$", "");
     }
     /*    @PostConstruct
     private void validate() {
