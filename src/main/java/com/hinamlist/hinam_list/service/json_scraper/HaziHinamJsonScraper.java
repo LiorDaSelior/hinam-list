@@ -16,36 +16,65 @@ public class HaziHinamJsonScraper extends AbstractJsonScraper{
 
     public HaziHinamJsonScraper(StoreDataConfigProperties storeDataConfigProperties) throws IOException, InterruptedException, APIResponseException {
         super(storeDataConfigProperties);
-        String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() + "/init";
-        HttpRequest request = createHttpGetRequest(uriString);
-        getResponse(request);
-
+        if (storeDataConfigProperties.getStoreDataMap().containsKey(storeName)) {
+            String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() + "/init";
+            HttpRequest request = createHttpGetRequest(uriString);
+            getResponse(request);
+        }
     }
+
+
+
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
         String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
                 "/api/Catalog/get";
         HttpRequest request = createHttpGetRequest(uriString);
-        JSONArray jsonArray = new JSONObject(getResponse(request)).getJSONObject("Results").getJSONArray("Categories");
-        List<String> idArray = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONArray currentSubCategoryJsonArray = jsonArray.getJSONObject(i).getJSONArray("SubCategories");
+        String jsonResponseString = getResponse(request);
+
+        JSONArray categoryJsonArray = extractJsonCategoryArrayFromJsonResponseString(jsonResponseString);
+
+        return extractSubcategoryIdListFromCategoryJsonArray(categoryJsonArray);
+    }
+
+    protected JSONArray extractJsonCategoryArrayFromJsonResponseString(String jsonResponse) {
+        return new JSONObject(jsonResponse)
+                .getJSONObject("Results")
+                .getJSONArray("Categories");
+    }
+
+    protected List<String> extractSubcategoryIdListFromCategoryJsonArray(JSONArray categoryJsonArray) {
+        List<String> resultIdArray = new ArrayList<>();
+        for (int i = 0; i < categoryJsonArray.length(); i++) {
+            JSONArray currentSubCategoryJsonArray = categoryJsonArray
+                    .getJSONObject(i)
+                    .getJSONArray("SubCategories");
             for (int j = 0; j < currentSubCategoryJsonArray.length(); j++) {
-                idArray.add(String.valueOf(currentSubCategoryJsonArray.getJSONObject(j).getInt("Id")));
+                resultIdArray.add(
+                        String.valueOf(
+                                currentSubCategoryJsonArray
+                                        .getJSONObject(j)
+                                        .getInt("Id")));
             }
         }
-        return idArray;
+        return resultIdArray;
     }
+
 
     @Override
     public JSONArray getCategoryProductInfo(String categoryId) throws IOException, APIResponseException, InterruptedException {
-        JSONArray currentArray = new JSONArray();
-        JSONArray responseArray;
         String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
                 "/api/item/getItemsBySubCategory?Id=" + categoryId;
         HttpRequest request = createHttpGetRequest(uriString);
-        responseArray = new JSONObject(getResponse(request)).getJSONObject("Results").getJSONObject("Category").getJSONObject("SubCategory").getJSONArray("Items");
-        currentArray.putAll(responseArray);
-        return currentArray;
+        String jsonResponseString = getResponse(request);
+        return extractProductArrayFromJsonResponseString(jsonResponseString);
+    }
+
+    protected JSONArray extractProductArrayFromJsonResponseString(String jsonResponse) {
+        return new JSONObject(jsonResponse)
+                .getJSONObject("Results")
+                .getJSONObject("Category")
+                .getJSONObject("SubCategory")
+                .getJSONArray("Items");
     }
 }
