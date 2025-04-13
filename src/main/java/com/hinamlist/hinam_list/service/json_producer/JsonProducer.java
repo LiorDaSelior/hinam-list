@@ -32,7 +32,6 @@ public class JsonProducer implements IJsonProducer {
         }
     }
 
-    @Async
     //@EventListener(ApplicationReadyEvent.class)
     public void sendJSONData() throws IOException, InterruptedException, APIResponseException {
         for (String categoryId : scraper.getCategoryIdList()) {

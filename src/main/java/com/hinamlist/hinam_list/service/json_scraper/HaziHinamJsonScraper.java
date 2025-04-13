@@ -23,8 +23,6 @@ public class HaziHinamJsonScraper extends AbstractJsonScraper{
         }
     }
 
-
-
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
         String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
