@@ -15,7 +15,7 @@ import java.util.List;
 public class HaziHinamJsonScraper extends AbstractJsonScraper{
 
     public HaziHinamJsonScraper(StoreDataConfigProperties storeDataConfigProperties) throws IOException, InterruptedException, APIResponseException {
-        super(storeDataConfigProperties);
+        super(storeDataConfigProperties, "HaziHinam");
         if (storeDataConfigProperties.getStoreDataMap().containsKey(storeName)) {
             String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() + "/init";
             HttpRequest request = createHttpGetRequest(uriString);

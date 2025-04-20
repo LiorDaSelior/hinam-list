@@ -18,10 +18,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public abstract class AbstractJsonScraper {
-    public static final String SUFFIX = "JsonScraper";
-
     protected HttpClient client;
     protected StoreDataConfigProperties storeDataConfigProperties;
 
@@ -29,8 +26,8 @@ public abstract class AbstractJsonScraper {
     //protected final String targetBaseUrl;
 
     @Autowired
-    public AbstractJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
-        storeName = StoreDataConfigProperties.getStoreName(this.getClass().getSimpleName(), SUFFIX);
+    public AbstractJsonScraper(StoreDataConfigProperties storeDataConfigProperties, String storeName) {
+        this.storeName = storeName;
         this.storeDataConfigProperties = storeDataConfigProperties;
         //targetBaseUrl = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl();
 

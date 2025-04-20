@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class RamiLeviJsonScraper extends AbstractJsonScraper {
     public RamiLeviJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
-        super(storeDataConfigProperties);
+        super(storeDataConfigProperties, "RamiLevi");
     }
 
     @Override

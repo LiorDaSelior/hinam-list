@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class CarrfourJsonScraper extends AbstractJsonScraper {
     public CarrfourJsonScraper(StoreDataConfigProperties storeDataConfigProperties) {
-        super(storeDataConfigProperties);
+        super(storeDataConfigProperties, "Carrfour");
     }
 
     @Override
