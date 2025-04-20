@@ -13,16 +13,16 @@ import java.util.List;
 @Profile("!test")
 @Component
 public class JsonProducerStarter {
-    private final List<IJsonProducer> jsonProducerList;
+    private final List<JsonProducer> jsonProducerList;
 
     @Autowired
-    public JsonProducerStarter(List<IJsonProducer> jsonProducerList) {
+    public JsonProducerStarter(List<JsonProducer> jsonProducerList) {
         this.jsonProducerList = jsonProducerList;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void initJsonProducerSendData() throws IOException, InterruptedException, APIResponseException {
-        for (IJsonProducer producer : jsonProducerList) {
+        for (JsonProducer producer : jsonProducerList) {
             producer.sendJSONData();
         }
     }

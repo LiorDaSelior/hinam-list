@@ -1,25 +1,21 @@
 package com.hinamlist.hinam_list.service.json_producer;
 
-import com.hinamlist.hinam_list.service.json_scraper.IJsonScraper;
+import com.hinamlist.hinam_list.service.json_scraper.AbstractJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 
 import java.io.IOException;
 
-public class JsonProducer implements IJsonProducer {
+public class JsonProducer {
     public final static String SUFFIX = "Producer";
 
-    protected IJsonScraper scraper;
+    protected AbstractJsonScraper scraper;
     protected RabbitTemplate rabbitTemplate;
     protected String jsonSenderExchangeName;
 
-    public JsonProducer(RabbitTemplate rabbitTemplate, IJsonScraper scraper, String jsonSenderExchangeName) {
+    public JsonProducer(RabbitTemplate rabbitTemplate, AbstractJsonScraper scraper, String jsonSenderExchangeName) {
         this.rabbitTemplate = rabbitTemplate;
         this.scraper = scraper;
         this.jsonSenderExchangeName = jsonSenderExchangeName;
@@ -32,7 +28,6 @@ public class JsonProducer implements IJsonProducer {
         }
     }
 
-    //@EventListener(ApplicationReadyEvent.class)
     public void sendJSONData() throws IOException, InterruptedException, APIResponseException {
         for (String categoryId : scraper.getCategoryIdList()) {
             JSONArray jsonArray = scraper.getCategoryProductInfo(categoryId);
@@ -43,7 +38,6 @@ public class JsonProducer implements IJsonProducer {
         sendJSONObject(new JSONObject());
     }
 
-    @Override
     public void sendJSONObject(JSONObject jsonObject) {
         rabbitTemplate.convertAndSend(jsonSenderExchangeName, "", jsonObject.toString());
     }

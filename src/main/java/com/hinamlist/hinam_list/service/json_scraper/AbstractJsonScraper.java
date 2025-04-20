@@ -2,6 +2,7 @@ package com.hinamlist.hinam_list.service.json_scraper;
 
 import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,11 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
 @Component
-public abstract class AbstractJsonScraper implements IJsonScraper{
+public abstract class AbstractJsonScraper {
     public static final String SUFFIX = "JsonScraper";
 
     protected HttpClient client;
@@ -36,6 +38,9 @@ public abstract class AbstractJsonScraper implements IJsonScraper{
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         client = HttpClient.newBuilder().cookieHandler(cookieManager).build();
     }
+
+    public abstract List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException;
+    public abstract JSONArray getCategoryProductInfo(String categoryId) throws IOException, APIResponseException, InterruptedException;
 
     private HttpRequest.Builder createHttpBuilder(String uriString) {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();

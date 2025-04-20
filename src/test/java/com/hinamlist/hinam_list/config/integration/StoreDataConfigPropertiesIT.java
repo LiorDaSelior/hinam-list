@@ -2,7 +2,6 @@ package com.hinamlist.hinam_list.config.integration;
 
 import com.hinamlist.hinam_list.common.ProducerLevelPropertiesConfiguration;
 import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
-import com.hinamlist.hinam_list.service.json_producer.IJsonProducer;
 import com.hinamlist.hinam_list.service.json_producer.JsonProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource("classpath:application.properties")
 public class StoreDataConfigPropertiesIT {
     private final StoreDataConfigProperties configProperties;
-    private final Map<String, IJsonProducer> producerMap;
+    private final Map<String, JsonProducer> producerMap;
 
 
     @Autowired
     public StoreDataConfigPropertiesIT(
             StoreDataConfigProperties configProperties,
-            Map<String, IJsonProducer> producerMap
+            Map<String, JsonProducer> producerMap
     ) {
         this.configProperties = configProperties;
         this.producerMap = producerMap;
