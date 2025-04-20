@@ -1,5 +1,6 @@
 package com.hinamlist.hinam_list.service.json_producer;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.CarrfourJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.HaziHinamJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.RamiLeviJsonScraper;
@@ -12,26 +13,26 @@ import org.springframework.context.annotation.Configuration;
 public class JsonProducerConfig {
 
     @Bean
-    public JsonProducer HaziHinamProducer(
+    public JsonProducer HaziHinamMainJsonProducer(
             RabbitTemplate rabbitTemplate,
             HaziHinamJsonScraper scraper,
-            @Value("${rabbitmq.json-sender.exchange.hazihinam}") String jsonSenderExchangeName) {
-        return new JsonProducer(rabbitTemplate, scraper, jsonSenderExchangeName);
+            StoreDataConfigProperties storeDataConfigProperties) {
+        return new JsonProducer(rabbitTemplate, scraper, "HaziHinam", storeDataConfigProperties);
     }
 
     @Bean
-    public JsonProducer RamiLeviProducer(
+    public JsonProducer RamiLeviMainJsonProducer(
             RabbitTemplate rabbitTemplate,
             RamiLeviJsonScraper scraper,
-            @Value("${rabbitmq.json-sender.exchange.ramilevi}") String jsonSenderExchangeName) {
-        return new JsonProducer(rabbitTemplate, scraper, jsonSenderExchangeName);
+            StoreDataConfigProperties storeDataConfigProperties) {
+        return new JsonProducer(rabbitTemplate, scraper, "RamiLevi", storeDataConfigProperties);
     }
 
     @Bean
-    public JsonProducer CarrfourProducer(
+    public JsonProducer CarrfourMainJsonProducer(
             RabbitTemplate rabbitTemplate,
             CarrfourJsonScraper scraper,
-            @Value("${rabbitmq.json-sender.exchange.carrfour}") String jsonSenderExchangeName) {
-        return new JsonProducer(rabbitTemplate, scraper, jsonSenderExchangeName);
+            StoreDataConfigProperties storeDataConfigProperties) {
+        return new JsonProducer(rabbitTemplate, scraper, "Carrfour", storeDataConfigProperties);
     }
 }

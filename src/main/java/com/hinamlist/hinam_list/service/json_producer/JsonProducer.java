@@ -1,24 +1,42 @@
 package com.hinamlist.hinam_list.service.json_producer;
 
+import com.hinamlist.hinam_list.config.StoreDataConfigProperties;
 import com.hinamlist.hinam_list.service.json_scraper.AbstractJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.exception.APIResponseException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+
+import static com.hinamlist.hinam_list.service.json_producer.ProducerMessageTypeEnum.DATA;
+import static com.hinamlist.hinam_list.service.json_producer.ProducerMessageTypeEnum.FINISHED;
 
 public class JsonProducer {
     public final static String SUFFIX = "Producer";
 
     protected AbstractJsonScraper scraper;
     protected RabbitTemplate rabbitTemplate;
-    protected String jsonSenderExchangeName;
 
-    public JsonProducer(RabbitTemplate rabbitTemplate, AbstractJsonScraper scraper, String jsonSenderExchangeName) {
+    protected String storeName;
+    protected  StoreDataConfigProperties storeDataConfigProperties;
+
+    @Value("${rabbitmq.main-json-producer.exchange.name}")
+    protected String jsonSenderExchangeName;
+    protected String topicName;
+    protected String storeHeader;
+
+    public JsonProducer(RabbitTemplate rabbitTemplate, AbstractJsonScraper scraper,
+                        String storeName, StoreDataConfigProperties storeDataConfigProperties) {
         this.rabbitTemplate = rabbitTemplate;
         this.scraper = scraper;
-        this.jsonSenderExchangeName = jsonSenderExchangeName;
+        this.storeName = storeName;
+        this.storeDataConfigProperties = storeDataConfigProperties;
+        this.topicName = storeDataConfigProperties.getStoreDataMap().get(storeName).mainTopicName();
+        this.storeHeader = storeDataConfigProperties.getStoreDataMap().get(storeName).messageStoreHeader();
     }
 
     public void sendJSONDataByCategory(String categoryId) throws IOException, InterruptedException, APIResponseException {
@@ -35,10 +53,22 @@ public class JsonProducer {
                 sendJSONObject(jsonArray.getJSONObject(i));
             }
         }
-        sendJSONObject(new JSONObject());
+        sendFinishedStatus();
     }
 
     public void sendJSONObject(JSONObject jsonObject) {
-        rabbitTemplate.convertAndSend(jsonSenderExchangeName, "", jsonObject.toString());
+        MessageProperties msgProperties = new MessageProperties();
+        msgProperties.setHeader("messageType", DATA);
+        msgProperties.setHeader("store", storeHeader);
+        Message message = new Message(jsonObject.toString().getBytes(), msgProperties);
+        rabbitTemplate.convertAndSend(jsonSenderExchangeName, this.topicName, message);
+    }
+
+    public void sendFinishedStatus() {
+        MessageProperties msgProperties = new MessageProperties();
+        msgProperties.setHeader("messageType", FINISHED);
+        msgProperties.setHeader("store", storeHeader);
+        Message message = new Message("".getBytes(), msgProperties);
+        rabbitTemplate.convertAndSend(jsonSenderExchangeName, this.topicName, message);
     }
 }
