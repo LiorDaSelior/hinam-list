@@ -3,7 +3,6 @@ package com.hinamlist.hinam_list.service.common.json_fetcher;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-@Component
 public class RamiLeviFetcher extends AbstractFetcher {
     @Override
     public int extractIdFromJsonObject(JSONObject jsonObject) {
