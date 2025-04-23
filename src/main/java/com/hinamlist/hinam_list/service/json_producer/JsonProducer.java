@@ -9,6 +9,8 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.io.IOException;
 
@@ -46,6 +48,7 @@ public class JsonProducer {
         }
     }
 
+    @Async
     public void sendJSONData() throws IOException, InterruptedException, APIResponseException {
         for (String categoryId : scraper.getCategoryIdList()) {
             JSONArray jsonArray = scraper.getCategoryProductInfo(categoryId);

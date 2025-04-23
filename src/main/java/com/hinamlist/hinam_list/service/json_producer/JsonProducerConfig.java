@@ -5,6 +5,7 @@ import com.hinamlist.hinam_list.service.json_scraper.CarrfourJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.HaziHinamJsonScraper;
 import com.hinamlist.hinam_list.service.json_scraper.RamiLeviJsonScraper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ public class JsonProducerConfig {
 
     @Bean
     public JsonProducer HaziHinamMainJsonProducer(
-            RabbitTemplate rabbitTemplate,
+            @Qualifier("SimpleTemplate") RabbitTemplate rabbitTemplate,
             HaziHinamJsonScraper scraper,
             StoreDataConfigProperties storeDataConfigProperties) {
         return new JsonProducer(rabbitTemplate, scraper, "HaziHinam", storeDataConfigProperties);
@@ -22,7 +23,7 @@ public class JsonProducerConfig {
 
     @Bean
     public JsonProducer RamiLeviMainJsonProducer(
-            RabbitTemplate rabbitTemplate,
+            @Qualifier("SimpleTemplate") RabbitTemplate rabbitTemplate,
             RamiLeviJsonScraper scraper,
             StoreDataConfigProperties storeDataConfigProperties) {
         return new JsonProducer(rabbitTemplate, scraper, "RamiLevi", storeDataConfigProperties);
@@ -30,7 +31,7 @@ public class JsonProducerConfig {
 
     @Bean
     public JsonProducer CarrfourMainJsonProducer(
-            RabbitTemplate rabbitTemplate,
+            @Qualifier("SimpleTemplate") RabbitTemplate rabbitTemplate,
             CarrfourJsonScraper scraper,
             StoreDataConfigProperties storeDataConfigProperties) {
         return new JsonProducer(rabbitTemplate, scraper, "Carrfour", storeDataConfigProperties);

@@ -16,23 +16,26 @@ import java.util.function.Supplier;
 public class FeatureSupplier<T> {
     protected static int queueCount = 0;
     protected RabbitAdmin rabbitAdmin;
-    protected RabbitTemplate rabbitTemplate;
+    protected RabbitTemplate supplierRabbitTemplate;
+    protected RabbitTemplate featureRabbitTemplate;
     protected String featureQueueName;
     protected Queue consumerQueue;
     protected Map<String, Function<JSONObject, T>> storeResponseMap;
 
     public FeatureSupplier(RabbitAdmin rabbitAdmin,
-                           RabbitTemplate rabbitTemplate,
+                           RabbitTemplate supplierRabbitTemplate,
+                           RabbitTemplate featureRabbitTemplate,
                            String featureQueueName,
                            TopicExchange mainTopicExchange,
                            Map<String, Function<JSONObject, T>> storeResponseMap,
                            String... topics
                            ) {
         this.rabbitAdmin = rabbitAdmin;
-        this.rabbitTemplate = rabbitTemplate;
+        this.supplierRabbitTemplate = supplierRabbitTemplate;
+        this.featureRabbitTemplate = featureRabbitTemplate;
         this.featureQueueName = featureQueueName;
         this.storeResponseMap = storeResponseMap;
-        this.consumerQueue = new Queue("feature-consumer-queue" + (queueCount++), true);
+        this.consumerQueue = new Queue("feature-consumer-queue-" + (queueCount++), true);
         rabbitAdmin.declareQueue(consumerQueue);
         connectToTopicExchange(mainTopicExchange, topics);
     }
@@ -42,7 +45,7 @@ public class FeatureSupplier<T> {
         for (String topic : topics) {
             rabbitAdmin.declareBinding(BindingBuilder.bind(consumerQueue).to(exchange).with(topic));
         }
-        SimpleMessageListenerContainer listener = new SimpleMessageListenerContainer(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
+        SimpleMessageListenerContainer listener = new SimpleMessageListenerContainer(this.supplierRabbitTemplate.getConnectionFactory());
         listener.addQueues(consumerQueue);
         listener.setMessageListener(this::handleMessage);
         listener.start();
@@ -51,14 +54,14 @@ public class FeatureSupplier<T> {
     protected void handleMessage(Message msg) {
         MessageProperties msgProperties = msg.getMessageProperties();
         String store = msgProperties.getHeader("store");
-        ProducerMessageTypeEnum messageType = msgProperties.getHeader("messageType");
+        ProducerMessageTypeEnum messageType =  ProducerMessageTypeEnum.valueOf(msgProperties.getHeader("messageType"));
         if (messageType == ProducerMessageTypeEnum.DATA && storeResponseMap.containsKey(store)) {
             T res = storeResponseMap.get(store).apply(
                     new JSONObject(
                             new String(msg.getBody(), StandardCharsets.UTF_8)
                     )
             );
-            rabbitTemplate.convertAndSend(featureQueueName, res);
+            featureRabbitTemplate.convertAndSend(featureQueueName, res);
         }
     }
 }

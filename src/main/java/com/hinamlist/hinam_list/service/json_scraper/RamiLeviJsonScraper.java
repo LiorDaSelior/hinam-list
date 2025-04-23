@@ -22,7 +22,7 @@ public class RamiLeviJsonScraper extends AbstractJsonScraper {
     @Override
     public List<String> getCategoryIdList() throws IOException, APIResponseException, InterruptedException {
         String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
-                "/v2/site/static/menu";
+                "https://www-api.rami-levy.co.il/api/v2/site/static/menu";
         HttpRequest request = createHttpPostRequest(uriString, new HashMap<>());
         return new ArrayList<>(new JSONObject(getResponse(request)).getJSONObject("groups").keySet());
     }
@@ -40,7 +40,7 @@ public class RamiLeviJsonScraper extends AbstractJsonScraper {
         do {
             breakCheck = false;
             String uriString = storeDataConfigProperties.getStoreDataMap().get(storeName).targetBaseUrl() +
-                    "/catalog?";
+                    "https://www.rami-levy.co.il/api/catalog?";
             propertyMap.clear();
             propertyMap.put("g", categoryId);
             propertyMap.put("from", String.valueOf(currentAmount));
