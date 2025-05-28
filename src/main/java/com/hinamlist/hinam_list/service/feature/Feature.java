@@ -20,7 +20,6 @@ public class Feature<T> {
     protected FeatureSupplier<T> featureSupplier;
     protected Consumer<T> featureLogic;
     protected ObjectMapper objectMapper;
-    protected TypeReference<T> jacksonTypeRef;
 
     public Feature( Class<T> featureClass,
                     RabbitAdmin rabbitAdmin,
@@ -32,7 +31,6 @@ public class Feature<T> {
                    Map<String, Function<JSONObject, T>> storeResponseMap,
                    String... topics) {
         this.featureClass = featureClass;
-        this.jacksonTypeRef = new TypeReference<T>() {};
         this.featureQueue = rabbitAdmin.declareQueue();
         this.featureSupplier = new FeatureSupplier<>(rabbitAdmin, supplierRabbitTemplate, featureRabbitTemplate,
                 this.featureQueue.getName(), mainTopicExchange, storeResponseMap, topics);
