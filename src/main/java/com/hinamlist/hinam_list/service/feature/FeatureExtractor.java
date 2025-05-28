@@ -11,7 +11,6 @@ public abstract class FeatureExtractor<T>{
     }
 
     public T extractFromJsonDataByStore (JSONObject jsonObject, String storeName) {
-        System.out.println(storeName);
         return switch (storeName) {
             case "HaziHinam" -> extractFromJsonDataHaziHinam(jsonObject);
             case "RamiLevi" -> extractFromJsonDataRamiLevi(jsonObject);
