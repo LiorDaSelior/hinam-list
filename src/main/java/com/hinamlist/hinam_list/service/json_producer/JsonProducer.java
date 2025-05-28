@@ -29,7 +29,6 @@ public class JsonProducer {
     @Value("${rabbitmq.main-json-producer.exchange.name}")
     protected String jsonSenderExchangeName;
     protected String topicName;
-    protected String storeHeader;
 
     public JsonProducer(RabbitTemplate rabbitTemplate, AbstractJsonScraper scraper,
                         String storeName, StoreDataConfigProperties storeDataConfigProperties) {
@@ -38,7 +37,6 @@ public class JsonProducer {
         this.storeName = storeName;
         this.storeDataConfigProperties = storeDataConfigProperties;
         this.topicName = storeDataConfigProperties.getStoreDataMap().get(storeName).mainTopicName();
-        this.storeHeader = storeDataConfigProperties.getStoreDataMap().get(storeName).messageStoreHeader();
     }
 
     public void sendJSONDataByCategory(String categoryId) throws IOException, InterruptedException, APIResponseException {
@@ -62,7 +60,7 @@ public class JsonProducer {
     public void sendJSONObject(JSONObject jsonObject) {
         MessageProperties msgProperties = new MessageProperties();
         msgProperties.setHeader("messageType", DATA);
-        msgProperties.setHeader("store", storeHeader);
+        msgProperties.setHeader("store", storeName);
         Message message = new Message(jsonObject.toString().getBytes(), msgProperties);
         rabbitTemplate.convertAndSend(jsonSenderExchangeName, this.topicName, message);
     }
@@ -70,7 +68,7 @@ public class JsonProducer {
     public void sendFinishedStatus() {
         MessageProperties msgProperties = new MessageProperties();
         msgProperties.setHeader("messageType", FINISHED);
-        msgProperties.setHeader("store", storeHeader);
+        msgProperties.setHeader("store", storeName);
         Message message = new Message("".getBytes(), msgProperties);
         rabbitTemplate.convertAndSend(jsonSenderExchangeName, this.topicName, message);
     }

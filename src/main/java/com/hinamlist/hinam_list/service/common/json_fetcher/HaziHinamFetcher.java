@@ -5,7 +5,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
 public class HaziHinamFetcher extends AbstractFetcher {
+    public HaziHinamFetcher() {
+        super("HaziHinam");
+    }
+
     @Override
     public int extractIdFromJsonObject(JSONObject jsonObject) {
         return jsonObject.getInt("Id");

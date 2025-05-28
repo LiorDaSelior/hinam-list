@@ -7,4 +7,6 @@ public interface IFetcher {
     abstract String extractBarcodeFromJsonObject(JSONObject jsonObject);
     abstract String extractNameFromJsonObject(JSONObject jsonObject);
     abstract boolean extractIsInKgFromJsonObject(JSONObject jsonObject);
+
+    String getStoreName();
 }

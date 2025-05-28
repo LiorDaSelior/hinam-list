@@ -22,4 +22,8 @@ public class StoreDataConfigProperties {
     public void setStoreDataMap(Map<String, StoreData> storeDataMap) {
         this.storeDataMap = storeDataMap;
     }
+
+    public int getStoreDatabaseId(String storeName) {
+        return storeDataMap.get(storeName).databaseId();
+    }
 }

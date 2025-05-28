@@ -19,7 +19,7 @@ public class FeatureSupplier<T> {
     protected RabbitTemplate featureRabbitTemplate;
     protected String featureQueueName;
     protected Queue consumerQueue;
-    protected Map<String, Function<JSONObject, T>> storeResponseMap;
+    protected FeatureExtractor<T> featureExtractor;
     protected SimpleMessageListenerContainer listenerContainer;
 
     public FeatureSupplier(RabbitAdmin rabbitAdmin,
@@ -27,14 +27,14 @@ public class FeatureSupplier<T> {
                            RabbitTemplate featureRabbitTemplate,
                            String featureQueueName,
                            TopicExchange mainTopicExchange,
-                           Map<String, Function<JSONObject, T>> storeResponseMap,
+                           FeatureExtractor<T> featureExtractor,
                            String... topics
                            ) {
         this.rabbitAdmin = rabbitAdmin;
         this.supplierRabbitTemplate = supplierRabbitTemplate;
         this.featureRabbitTemplate = featureRabbitTemplate;
         this.featureQueueName = featureQueueName;
-        this.storeResponseMap = storeResponseMap;
+        this.featureExtractor = featureExtractor;
         this.consumerQueue = rabbitAdmin.declareQueue();
         connectToTopicExchange(mainTopicExchange, topics);
     }
@@ -52,13 +52,12 @@ public class FeatureSupplier<T> {
 
     protected void handleMessage(Message msg) {
         MessageProperties msgProperties = msg.getMessageProperties();
-        String store = msgProperties.getHeader("store");
+        String storeName = msgProperties.getHeader("store");
         ProducerMessageTypeEnum messageType =  ProducerMessageTypeEnum.valueOf(msgProperties.getHeader("messageType"));
-        if (messageType == ProducerMessageTypeEnum.DATA && storeResponseMap.containsKey(store)) {
-            T res = storeResponseMap.get(store).apply(
-                    new JSONObject(
-                            new String(msg.getBody(), StandardCharsets.UTF_8)
-                    )
+        if (messageType == ProducerMessageTypeEnum.DATA) {
+            T res = featureExtractor.extractFromJsonDataByStore(
+                    new JSONObject(new String(msg.getBody(), StandardCharsets.UTF_8)),
+                    storeName
             );
             featureRabbitTemplate.convertAndSend(featureQueueName, res);
         }

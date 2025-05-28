@@ -29,12 +29,12 @@ public class Feature<T> {
                    TopicExchange mainTopicExchange,
                    ObjectMapper objectMapper,
                    Consumer<T> featureLogic,
-                   Map<String, Function<JSONObject, T>> storeResponseMap,
+                   FeatureExtractor<T> featureExtractor,
                    String... topics) {
         this.featureClass = featureClass;
         this.featureQueue = rabbitAdmin.declareQueue();
         this.featureSupplier = new FeatureSupplier<>(rabbitAdmin, supplierRabbitTemplate, featureRabbitTemplate,
-                this.featureQueue.getName(), mainTopicExchange, storeResponseMap, topics);
+                this.featureQueue.getName(), mainTopicExchange, featureExtractor, topics);
         this.featureLogic = featureLogic;
         this.objectMapper = objectMapper;
 

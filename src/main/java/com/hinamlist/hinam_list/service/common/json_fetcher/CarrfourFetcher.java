@@ -3,7 +3,12 @@ package com.hinamlist.hinam_list.service.common.json_fetcher;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
+@Component
 public class CarrfourFetcher extends AbstractFetcher{
+    public CarrfourFetcher() {
+        super("Carrfour");
+    }
+
     @Override
     public int extractIdFromJsonObject(JSONObject jsonObject) {
         return jsonObject.getInt("id");

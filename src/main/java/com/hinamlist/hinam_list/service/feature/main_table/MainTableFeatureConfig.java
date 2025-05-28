@@ -20,13 +20,13 @@ public class MainTableFeatureConfig {
             TopicExchange mainTopicExchange,
             ObjectMapper objectMapper,
             MainTableFeatureLogic mainTableFeatureLogic,
-            MainTableStoreResponse mainTableStoreResponse
+            MainTableFeatureExtractor mainTableFeatureExtractor
     ) {
         return new Feature<>(MainTableProduct.class,
                 rabbitAdmin, supplierRabbitTemplate, featureRabbitTemplate,
                 mainTopicExchange, objectMapper,
                 mainTableFeatureLogic,
-                mainTableStoreResponse.getStoreResponseMap(),
+                mainTableFeatureExtractor,
                 "main.#"
                 );
     }
