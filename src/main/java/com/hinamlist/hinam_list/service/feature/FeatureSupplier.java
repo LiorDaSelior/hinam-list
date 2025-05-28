@@ -20,6 +20,7 @@ public class FeatureSupplier<T> {
     protected String featureQueueName;
     protected Queue consumerQueue;
     protected Map<String, Function<JSONObject, T>> storeResponseMap;
+    protected SimpleMessageListenerContainer listenerContainer;
 
     public FeatureSupplier(RabbitAdmin rabbitAdmin,
                            RabbitTemplate supplierRabbitTemplate,
@@ -43,10 +44,10 @@ public class FeatureSupplier<T> {
         for (String topic : topics) {
             rabbitAdmin.declareBinding(BindingBuilder.bind(consumerQueue).to(exchange).with(topic));
         }
-        SimpleMessageListenerContainer listener = new SimpleMessageListenerContainer(this.supplierRabbitTemplate.getConnectionFactory());
-        listener.addQueues(consumerQueue);
-        listener.setMessageListener(this::handleMessage);
-        listener.start();
+        listenerContainer = new SimpleMessageListenerContainer(this.supplierRabbitTemplate.getConnectionFactory());
+        listenerContainer.addQueues(consumerQueue);
+        listenerContainer.setMessageListener(this::handleMessage);
+        listenerContainer.start();
     }
 
     protected void handleMessage(Message msg) {

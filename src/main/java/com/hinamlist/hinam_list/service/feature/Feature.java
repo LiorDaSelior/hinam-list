@@ -20,6 +20,7 @@ public class Feature<T> {
     protected FeatureSupplier<T> featureSupplier;
     protected Consumer<T> featureLogic;
     protected ObjectMapper objectMapper;
+    protected SimpleMessageListenerContainer listenerContainer;
 
     public Feature( Class<T> featureClass,
                     RabbitAdmin rabbitAdmin,
@@ -42,9 +43,9 @@ public class Feature<T> {
 
 
     private void connectToQueue(RabbitTemplate featureRabbitTemplate, Queue queue) {
-        SimpleMessageListenerContainer listener = new SimpleMessageListenerContainer(featureRabbitTemplate.getConnectionFactory());
-        listener.addQueues(queue);
-        listener.setMessageListener(msg -> {
+        listenerContainer = new SimpleMessageListenerContainer(featureRabbitTemplate.getConnectionFactory());
+        listenerContainer.addQueues(queue);
+        listenerContainer.setMessageListener(msg -> {
             T featureObject;
             try {
                 featureObject = objectMapper.readValue(msg.getBody(), this.featureClass);
@@ -53,6 +54,6 @@ public class Feature<T> {
             }
             featureLogic.accept(featureObject);
         });
-        listener.start();
+        listenerContainer.start();
     }
 }
