@@ -14,7 +14,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FeatureSupplier<T> {
-    protected static int queueCount = 0;
     protected RabbitAdmin rabbitAdmin;
     protected RabbitTemplate supplierRabbitTemplate;
     protected RabbitTemplate featureRabbitTemplate;
@@ -35,8 +34,7 @@ public class FeatureSupplier<T> {
         this.featureRabbitTemplate = featureRabbitTemplate;
         this.featureQueueName = featureQueueName;
         this.storeResponseMap = storeResponseMap;
-        this.consumerQueue = new Queue("feature-consumer-queue-" + (queueCount++), true);
-        rabbitAdmin.declareQueue(consumerQueue);
+        this.consumerQueue = rabbitAdmin.declareQueue();
         connectToTopicExchange(mainTopicExchange, topics);
     }
 
